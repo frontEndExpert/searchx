@@ -1,22 +1,13 @@
 import React,{useState, useEffect} from 'react'
 
 
-function getGoogleSearchResults(q) {
+async function getGoogleSearchResults(q) {
     // Get the API key from Google's developer console
     // Get the CSE ID from google.com/cse
-    const CSE="b983ee7dc7314863b";
-    const KEY="AIzaSyBBnIdyegidawwjb71L3CN-9SVqRh01PMA";
-
-    //<script async src="https://cse.google.com/cse.js?cx=b983ee7dc7314863b"></script>
-    //<div class="gcse-search"></div>
-    /*
-*/
-    //"https://www.googleapis.com/customsearch/v1?q={searchTerms}&num=8&alt=json&sort={sort?}"
 
     console.log( "encodeURIComponent(q)" ,encodeURIComponent(q))
     var apiUrl = 'https://www.googleapis.com/customsearch/v1?key=' + KEY + '&cx=' + CSE + '&q=' + encodeURIComponent(q);
-  //  try {
-        fetch(apiUrl, {
+    await fetch(apiUrl, {
             muteHttpExceptions: true,
           })
         .then((response) => {
@@ -38,12 +29,8 @@ const SearchResults = (props) => {
 
     useEffect( () => {
 
-        var resultsArr = null;
-        (async () =>{ 
-            resultsArr = await getGoogleSearchResults(props.searchQuery)
-            console.log("resultsArr:", resultsArr)
-        })();
-        
+        var resultsArr = getGoogleSearchResults(props.searchQuery)
+        console.log("resultsArr:", resultsArr)
         setResults(resultsArr ? [...resultsArr]: null)
     },[props.searchQuery])
 
