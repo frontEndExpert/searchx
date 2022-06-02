@@ -1,68 +1,51 @@
 import React,{useState, useEffect} from 'react'
 import searches from '../fakeDB.json'
+import clock from '../images/clock-icon.png'
+import search from '../images/search-icon.png'
 
-//import { library } from '@fortawesome/fontawesome-svg-core'
-//import {clock} from '@fortawesome/react-fontawesome/'
-//import {search} from '@fortawesome/react-fontawesome/'
-//import { faSearch, fa-clock-nine} from '@fortawesome/free-solid-svg-icons'
-// library.add(
-//     faSearch,
-//     faClock
-// )
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Autocomplete = (props) => {
-    const [inList, setInList] = useState(false)
+    const [searchListFiltered, setSearchListFiltered] = useState(null)
     const searchList = searches.searches
+    const searchTerm = props.searchAuto
 
-    function convertUnicode(input) {
-        return input.replace(/\\u[0-9a-fA-F]{4}/g,function(a,b) {
-          var charcode = parseInt(b,16);
-          return String.fromCharCode(charcode);
-        });
-      }
-    
-    
-
-//<FontAwesomeIcon icon={faSearch} />"\u2315"
-/*
-            .icn-search:after { 
-                -webkit-transform: rotate(45deg); 				
-                -moz-transform: rotate(45deg); 				
-                -o-transform: rotate(45deg); 				
-                transform: rotate(45deg); 				
-                display: block; 				
-                content: ${convertUnicode("\u23F2")}; 			
-            } */
-    return (
-    <>
-        <div className="autocomplete">{convertUnicode("\ue67b")}
-        {  searchList.map( (item) => 
-            <div className="searchRow" key={item.id} onClick={() => props.sellectItem(item.id)} >
-                <span >{!inList ? 	"\u23F2" :  "\uE67C"  } </span>
-                <span>{item.title}</span>
-                {  <span className='ssss' />}
-            </div>      
-        )} 
-        </div>
-        <style jsx>{` 
+    useEffect(() => {
+        if(searchTerm){
+            setSearchListFiltered(
+                    searchList.filter(search => search.title.includes(searchTerm))
+            )
+        }
         
-            .autocomplete{
-                display: flex;
+    },[searchTerm])
+
+    
+    return (
+        <div className="autocomplete">
+        { searchListFiltered && searchListFiltered.map( (item) => {
+            var listItem = props.inList.filter( (list) => parseInt(list.id) === parseInt(item.id ))
+        return (
+            <div className="searchRow" key={item.id} >
+                <img src={listItem[0] && listItem[0].searched ? 	clock :  search  }  alt={item.title} />
+                <span onClick={() => props.sellectItem(item.id)}  >{item.title}</span>
+                { listItem[0] && listItem[0].searched && <span className='remove' onClick={() => props.removeItem(item.id)}>remove</span>}
+            </div>      
+        )})} 
+
+        <style >{` .autocomplete { display: flex;
                 flex-flow: column wrap;
                 font-size: 18px;
                 font-weight: normal;
-
             }
-
-            .searchRow:hover {
-                cursor: pointer;
-                font-weight: 500;
+            .searchRow > span:hover { cursor: pointer;
+                background-color: #DDD
             }
-
-
+            .searchRow > span { margin-left: 5px;
+            }
+            .remove { float: right;
+                z-index: 22;
+            }
         `}</style>
-    </>
+    </div>
     )
 }
 
