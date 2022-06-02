@@ -27,8 +27,7 @@ const SearchResults = (props) => {
     async function getGoogleSearchResults(q,page) {
         // Get the API key from Google's developer console
         // Get the CSE ID from google.com/cse
-        const CSE="b983ee7dc7314863b";
-        const KEY="AIzaSyBBnIdyegidawwjb71L3CN-9SVqRh01PMA";
+        
         
     
         var apiUrl = 'https://www.googleapis.com/customsearch/v1?key=' + KEY + '&cx=' + CSE + '&q=' + encodeURIComponent(q) + '&start=' + page + '&num=10';
